@@ -4,7 +4,6 @@
 import { Phone, Mail, MapPin, Target, Zap, Leaf, Shield, Heart, Menu, X, Users, Cpu, BarChart3, TrendingUp, DollarSign, Lightbulb, LocateFixed, Smartphone, Brain, ArrowRight, Clock } from 'lucide-react'; 
 import Link from 'next/link'; 
 import Image from 'next/image';
-// Importez RefObject de React pour une typification correcte
 import { useEffect, useRef, useState, RefObject } from 'react'; 
 
 // --- Définitions de couleurs et chemins d'images ---
@@ -18,15 +17,14 @@ const TEXT_ACCENT = '#cccccc';
 const ACCENT_COLOR_BLUE = '#3b82f6'; 
 
 // --- HOOK POUR ANIMATION AU SCROLL (CORRIGÉ ET TYPÉ) ---
-// La correction majeure est l'ajout de <T extends HTMLElement = HTMLElement>(): [RefObject<T | null>, boolean]
+// Correction de type pour inclure T | null dans la RefObject de retour.
 const useAnimateOnScroll = <T extends HTMLElement = HTMLElement>(): [RefObject<T | null>, boolean] => {
     const [isVisible, setIsVisible] = useState(false);
-    // Utilisation de T pour useRef
     const ref = useRef<T>(null);
 
     useEffect(() => {
         const currentRef = ref.current;
-        if (!currentRef) return; // Utilisation sécurisée de currentRef
+        if (!currentRef) return; 
 
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -47,7 +45,6 @@ const useAnimateOnScroll = <T extends HTMLElement = HTMLElement>(): [RefObject<T
         };
     }, []);
 
-    // Le type de retour est maintenant RefObject<T | null>, compatible avec useRef<T>(null)
     return [ref, isVisible];
 };
 
@@ -75,7 +72,7 @@ const ResponsiveNavbar = () => {
                 <Link href="/" className="flex items-center space-x-2">
                     <div className="relative w-10 h-10 flex-shrink-0"> 
                         <Image
-                            src="/assets/logo-esrud.png" // Chemin du logo dans /public
+                            src="/assets/logo-esrud.png" 
                             alt="Logo ESRUD Agritech"
                             fill 
                             priority 
@@ -137,7 +134,6 @@ const Footer = () => {
                     <Link href="/" className="flex items-center space-x-2 mb-4">
                         <div className="relative w-10 h-10 flex-shrink-0"> 
                             <Image
-                                // Note: Correction d'un chemin d'image potentiel
                                 src="/assets/logo-esrud.png" 
                                 alt="Logo ESRUD Agritech"
                                 fill 
@@ -201,7 +197,7 @@ const iaBenefits = [
 
 // --- COMPOSANT PAGE : Intelligence Artificielle et Recommandations ---
 export default function IaPage() {
-    // Refs pour l'animation, le type <HTMLElement> est nécessaire et correct
+    // Refs pour l'animation
     const [heroRef, isHeroVisible] = useAnimateOnScroll<HTMLElement>();
     const [fundamentauxRef, isFundamentauxVisible] = useAnimateOnScroll<HTMLElement>();
     const [piliersRef, isPiliersVisible] = useAnimateOnScroll<HTMLElement>();
@@ -264,9 +260,9 @@ export default function IaPage() {
                             alt="Interface de la plateforme d'Intelligence Artificielle ESRUD-ANALYSIS" 
                             fill 
                             sizes="(max-width: 1024px) 100vw, 50vw"
-                            style={{ objectFit: 'cover' }}
                             className="border-4" 
-                            style={{ borderColor: ACCENT_COLOR_BLUE }}
+                            // CORRECTION APPLIQUÉE ICI : style fusionné
+                            style={{ objectFit: 'cover', borderColor: ACCENT_COLOR_BLUE }} 
                         />
                     </div>
                 </div>
