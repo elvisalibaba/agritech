@@ -289,7 +289,6 @@ export default function AboutPage() {
                                 src="/assets/agricultural-impact-ruler.jpg" 
                                 alt="Image montrant l'augmentation des rendements" 
                                 fill
-                                style={{ objectFit: 'cover' }}
                                 className="border-4 transition-transform duration-500 hover:scale-[1.03]" 
                                 style={{ borderColor: GREEN_PRIMARY }}
                                 sizes="(max-width: 1024px) 100vw, 50vw"
