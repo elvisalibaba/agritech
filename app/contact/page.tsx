@@ -4,9 +4,9 @@
 import { Phone, Mail, MapPin, Target, Zap, Leaf, Shield, Heart, Menu, X, Users, MessageSquare, Send } from 'lucide-react'; 
 import Link from 'next/link'; 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, RefObject } from 'react'; // Importez RefObject
 
-// --- Définitions de couleurs et chemins d'images (COPIÉES DE VOTRE EXEMPLE) ---
+// --- Définitions de couleurs et chemins d'images ---
 const BG_DARK = '#1e1e1e';
 const BG_GREEN_LIGHT = '#f2f8f2';
 const GREEN_PRIMARY = '#38a169'; 
@@ -14,12 +14,17 @@ const TEXT_DARK = '#333333';
 const TEXT_LIGHT = '#ffffff'; 
 const TEXT_ACCENT = '#cccccc';
 
-// --- HOOK POUR ANIMATION AU SCROLL (inchangé) ---
-const useAnimateOnScroll = () => {
+// --- HOOK POUR ANIMATION AU SCROLL (CORRIGÉ ET TYPÉ) ---
+// Utilisation d'un type générique T qui étend Element pour la compatibilité Ref
+const useAnimateOnScroll = <T extends HTMLElement = HTMLElement>(): [RefObject<T>, boolean] => {
     const [isVisible, setIsVisible] = useState(false);
-    const ref = useRef(null);
+    // Utilisation du type générique T pour useRef
+    const ref = useRef<T>(null);
 
     useEffect(() => {
+        const currentRef = ref.current;
+        if (!currentRef) return; 
+
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
@@ -30,22 +35,21 @@ const useAnimateOnScroll = () => {
             { threshold: 0.2 } 
         );
 
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
+        observer.observe(currentRef);
 
         return () => {
-            if (ref.current) {
-                observer.unobserve(ref.current);
+            if (currentRef) {
+                observer.unobserve(currentRef);
             }
         };
     }, []);
 
+    // Le retour est explicitement typé comme un tuple [RefObject<T>, boolean]
     return [ref, isVisible];
 };
 
 
-// --- COMPOSANT NAVBAR (COPIÉ DE VOTRE EXEMPLE) ---
+// --- COMPOSANT NAVBAR (Inchangé) ---
 const ResponsiveNavbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -126,7 +130,7 @@ const ResponsiveNavbar = () => {
     );
 };
 
-// --- COMPOSANT FOOTER (COPIÉ DE VOTRE EXEMPLE AVEC CHEMIN D'IMAGE CORRIGÉ) ---
+// --- COMPOSANT FOOTER (Inchangé) ---
 const Footer = () => {
     return (
         <footer className="bg-dark text-white py-12 px-8 border-t border-gray-700" style={{ backgroundColor: BG_DARK }}>
@@ -183,10 +187,18 @@ const Footer = () => {
 
 // --- COMPOSANT PAGE : Contact ---
 export default function ContactPage() {
-    // Refs pour l'animation
-    const [heroRef, isHeroVisible] = useAnimateOnScroll();
-    const [infoRef, isInfoVisible] = useAnimateOnScroll();
-    const [formRef, isFormVisible] = useAnimateOnScroll();
+    // Refs pour l'animation (maintenant typées correctement)
+    const [heroRef, isHeroVisible] = useAnimateOnScroll<HTMLElement>();
+    const [infoRef, isInfoVisible] = useAnimateOnScroll<HTMLElement>();
+    const [formRef, isFormVisible] = useAnimateOnScroll<HTMLElement>();
+
+    // Gestion du formulaire pour prévenir le rechargement
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Logique de soumission du formulaire ici (ex: fetch('/api/contact', ...))
+        console.log("Formulaire soumis. Implémentez la logique d'envoi API ici.");
+        alert("Message envoyé ! (Logique d'envoi non implémentée)");
+    };
 
     return (
         <div style={{ backgroundColor: BG_DARK }} className="flex flex-col min-h-screen font-sans overflow-x-hidden pt-[68px] text-white"> 
@@ -242,7 +254,8 @@ export default function ContactPage() {
                             Remplissez les champs ci-dessous pour démarrer la discussion. Nous répondons généralement en 24h ouvrées.
                         </p>
                         
-                        <form className="space-y-4">
+                        {/* ⚠️ CORRECTION : Ajout de la fonction handleSubmit pour un formulaire fonctionnel */}
+                        <form className="space-y-4" onSubmit={handleSubmit}> 
                             <input type="text" placeholder="Votre Nom Complet *" required className="w-full p-3 border border-gray-300 focus:border-green-500 focus:ring-green-500 transition-all duration-300" />
                             <input type="email" placeholder="Votre Email Professionnel *" required className="w-full p-3 border border-gray-300 focus:border-green-500 focus:ring-green-500 transition-all duration-300" />
                             <input type="text" placeholder="Sujet" className="w-full p-3 border border-gray-300 focus:border-green-500 focus:ring-green-500 transition-all duration-300" />
@@ -263,7 +276,10 @@ export default function ContactPage() {
                         <div className="relative w-full h-96 shadow-lg">
                             
 
-[Image of Kinshasa Map Placeholder]
+
+
+[Image of Map of Kinshasa, Democratic Republic of the Congo]
+
 
                             <Image 
                                 src="/assets/kinshasa-map-placeholder.jpg" 
