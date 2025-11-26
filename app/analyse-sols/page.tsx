@@ -168,9 +168,11 @@ export default function AnalyseSolsPage() {
                             alt="Robot ESRUD-TOUCH analysant le sol" 
                             fill 
                             sizes="(max-width: 1024px) 100vw, 50vw"
-                            style={{ objectFit: 'cover' }}
                             className="border-4" 
-                            style={{ borderColor: GREEN_PRIMARY }}
+                            style={{ 
+                                    objectFit: 'cover', 
+                                    borderColor: GREEN_PRIMARY 
+                                }}
                         />
                     </div>
                     
