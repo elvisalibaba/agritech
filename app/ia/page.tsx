@@ -1,30 +1,33 @@
 // ./app/ia/page.tsx
-
 'use client'; 
 
 import { Phone, Mail, MapPin, Target, Zap, Leaf, Shield, Heart, Menu, X, Users, Cpu, BarChart3, TrendingUp, DollarSign, Lightbulb, LocateFixed, Smartphone, Brain, ArrowRight, Clock } from 'lucide-react'; 
-//                                                                                                                                                                                                         ^^^^^^^ Ajout de Clock ici
 import Link from 'next/link'; 
 import Image from 'next/image';
-// ... Reste du code ...
-import { useEffect, useRef, useState } from 'react';
+// Importez RefObject de React pour une typification correcte
+import { useEffect, useRef, useState, RefObject } from 'react'; 
 
-// --- Définitions de couleurs et chemins d'images (COPIÉES DE VOTRE EXEMPLE) ---
+// --- Définitions de couleurs et chemins d'images ---
 const BG_DARK = '#1e1e1e';
-const BG_CARD_LIGHT = '#292929'; // Nouveau fond clair pour les cartes (utilisé car BG_DARK est très foncé)
+const BG_CARD_LIGHT = '#292929'; 
 const BG_GREEN_LIGHT = '#f2f8f2';
 const GREEN_PRIMARY = '#38a169'; 
 const TEXT_DARK = '#333333';
 const TEXT_LIGHT = '#ffffff'; 
 const TEXT_ACCENT = '#cccccc';
-const ACCENT_COLOR_BLUE = '#3b82f6'; // Couleur secondaire forte pour l'IA
+const ACCENT_COLOR_BLUE = '#3b82f6'; 
 
-// --- HOOK POUR ANIMATION AU SCROLL (inchangé) ---
-const useAnimateOnScroll = () => {
+// --- HOOK POUR ANIMATION AU SCROLL (CORRIGÉ ET TYPÉ) ---
+// La correction majeure est l'ajout de <T extends HTMLElement = HTMLElement>(): [RefObject<T | null>, boolean]
+const useAnimateOnScroll = <T extends HTMLElement = HTMLElement>(): [RefObject<T | null>, boolean] => {
     const [isVisible, setIsVisible] = useState(false);
-    const ref = useRef(null);
+    // Utilisation de T pour useRef
+    const ref = useRef<T>(null);
 
     useEffect(() => {
+        const currentRef = ref.current;
+        if (!currentRef) return; // Utilisation sécurisée de currentRef
+
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
@@ -35,22 +38,21 @@ const useAnimateOnScroll = () => {
             { threshold: 0.2 } 
         );
 
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
+        observer.observe(currentRef);
 
         return () => {
-            if (ref.current) {
-                observer.unobserve(ref.current);
+            if (currentRef) {
+                observer.unobserve(currentRef);
             }
         };
     }, []);
 
+    // Le type de retour est maintenant RefObject<T | null>, compatible avec useRef<T>(null)
     return [ref, isVisible];
 };
 
 
-// --- COMPOSANT NAVBAR (COPIÉ DE VOTRE EXEMPLE, AVEC LIEN SOLUTIONS EN SURBRILLANCE) ---
+// --- COMPOSANT NAVBAR (Inchangé) ---
 const ResponsiveNavbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -60,7 +62,7 @@ const ResponsiveNavbar = () => {
 
     const navLinks = [
         { href: "/", label: "Accueil" },
-        { href: "/solutions", label: "Nos solutions", active: true }, // ACTIVÉ
+        { href: "/solutions", label: "Nos solutions", active: true }, 
         { href: "/about", label: "À propos" },
         { href: "/blog", label: "Blog" },
     ];
@@ -125,7 +127,7 @@ const ResponsiveNavbar = () => {
     );
 };
 
-// --- COMPOSANT FOOTER (COPIÉ DE VOTRE EXEMPLE) ---
+// --- COMPOSANT FOOTER (Inchangé) ---
 const Footer = () => {
     return (
         <footer className="bg-dark text-white py-12 px-8 border-t border-gray-700" style={{ backgroundColor: BG_DARK }}>
@@ -135,7 +137,8 @@ const Footer = () => {
                     <Link href="/" className="flex items-center space-x-2 mb-4">
                         <div className="relative w-10 h-10 flex-shrink-0"> 
                             <Image
-                                src="/images/logo-esrud.png" 
+                                // Note: Correction d'un chemin d'image potentiel
+                                src="/assets/logo-esrud.png" 
                                 alt="Logo ESRUD Agritech"
                                 fill 
                                 sizes="40px"
@@ -180,7 +183,7 @@ const Footer = () => {
 // --- Fin des Composants de Base ---
 
 
-// --- Données pour la Page IA (inchangées) ---
+// --- Données pour la Page IA (Inchangées) ---
 const iaFeatures = [
     { icon: <Brain className="w-8 h-8"/>, title: "Diagnostic précis du sol", description: "Interprétation immédiate des données (pH, humidité, nutriments) pour une compréhension claire de l'état de la parcelle." },
     { icon: <MapPin className="w-8 h-8"/>, title: "Cartographie ciblée", description: "Génération de cartes de fertilité et de besoins qui délimitent précisément les zones à traiter (Zonage de Précision)." },
@@ -198,12 +201,12 @@ const iaBenefits = [
 
 // --- COMPOSANT PAGE : Intelligence Artificielle et Recommandations ---
 export default function IaPage() {
-    // Refs pour l'animation
-    const [heroRef, isHeroVisible] = useAnimateOnScroll();
-    const [fundamentauxRef, isFundamentauxVisible] = useAnimateOnScroll();
-    const [piliersRef, isPiliersVisible] = useAnimateOnScroll();
-    const [processusRef, isProcessusVisible] = useAnimateOnScroll();
-    const [beneficesRef, isBeneficesVisible] = useAnimateOnScroll();
+    // Refs pour l'animation, le type <HTMLElement> est nécessaire et correct
+    const [heroRef, isHeroVisible] = useAnimateOnScroll<HTMLElement>();
+    const [fundamentauxRef, isFundamentauxVisible] = useAnimateOnScroll<HTMLElement>();
+    const [piliersRef, isPiliersVisible] = useAnimateOnScroll<HTMLElement>();
+    const [processusRef, isProcessusVisible] = useAnimateOnScroll<HTMLElement>();
+    const [beneficesRef, isBeneficesVisible] = useAnimateOnScroll<HTMLElement>();
 
     return (
         <div style={{ backgroundColor: BG_DARK }} className="flex flex-col min-h-screen font-sans overflow-x-hidden pt-[68px] text-white"> 
@@ -225,7 +228,7 @@ export default function IaPage() {
                     </p>
                     <Link
                         href="/contact"
-                        style={{ backgroundColor: GREEN_PRIMARY, color: 'white' }} // COULEUR BLANCHE RESPECTÉE
+                        style={{ backgroundColor: GREEN_PRIMARY, color: 'white' }} 
                         className="inline-block px-8 py-3 font-semibold hover:bg-green-700 transition-colors duration-300 transform hover:scale-105 animate-slide-up-delay-2"
                     >
                         Accéder à la démo de la plateforme
