@@ -342,9 +342,8 @@ export default function AboutPage() {
 
                     <Link
                         href="/contact"
-                        style={{ backgroundColor: GREEN_PRIMARY, color: 'black' }}
                         className="inline-block mt-10 sm:mt-12 px-8 sm:px-10 py-3 sm:py-4 text-base sm:text-lg font-bold hover:bg-green-700 transition-colors duration-300 transform hover:scale-105 animate-slide-up"
-                        style={{ animationDelay: '1.2s' }}
+                        style={{ backgroundColor: GREEN_PRIMARY, color: 'black' }}
                     >
                         Contactez notre équipe
                     </Link>
