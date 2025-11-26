@@ -4,7 +4,7 @@
 import { Phone, Mail, MapPin, Target, Zap, Leaf, Shield, Heart, Menu, X, Users, MessageSquare, Send } from 'lucide-react'; 
 import Link from 'next/link'; 
 import Image from 'next/image';
-import { useEffect, useRef, useState, RefObject } from 'react'; // Importez RefObject
+import { useEffect, useRef, useState, RefObject } from 'react';
 
 // --- Définitions de couleurs et chemins d'images ---
 const BG_DARK = '#1e1e1e';
@@ -14,11 +14,11 @@ const TEXT_DARK = '#333333';
 const TEXT_LIGHT = '#ffffff'; 
 const TEXT_ACCENT = '#cccccc';
 
-// --- HOOK POUR ANIMATION AU SCROLL (CORRIGÉ ET TYPÉ) ---
-// Utilisation d'un type générique T qui étend Element pour la compatibilité Ref
-const useAnimateOnScroll = <T extends HTMLElement = HTMLElement>(): [RefObject<T>, boolean] => {
+// --- HOOK POUR ANIMATION AU SCROLL (CORRIGÉ ET TYPÉ POUR ÉVITER LES ERREURS DE NULL) ---
+// La correction majeure est dans le type de retour : [RefObject<T | null>, boolean]
+const useAnimateOnScroll = <T extends HTMLElement = HTMLElement>(): [RefObject<T | null>, boolean] => {
     const [isVisible, setIsVisible] = useState(false);
-    // Utilisation du type générique T pour useRef
+    // Le RefObject est typé pour contenir l'élément T ou null
     const ref = useRef<T>(null);
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const useAnimateOnScroll = <T extends HTMLElement = HTMLElement>(): [RefObject<T
         };
     }, []);
 
-    // Le retour est explicitement typé comme un tuple [RefObject<T>, boolean]
+    // Retourne l'objet ref (avec le type T | null) et l'état boolean.
     return [ref, isVisible];
 };
 
@@ -140,7 +140,7 @@ const Footer = () => {
                     <Link href="/" className="flex items-center space-x-2 mb-4">
                         <div className="relative w-10 h-10 flex-shrink-0"> 
                             <Image
-                                src="/assets/logo-esrud.png" // 🚀 CORRECTION: Assure la cohérence des chemins.
+                                src="/assets/logo-esrud.png" // Assure la cohérence des chemins.
                                 alt="Logo ESRUD Agritech"
                                 fill 
                                 sizes="40px"
@@ -187,7 +187,7 @@ const Footer = () => {
 
 // --- COMPOSANT PAGE : Contact ---
 export default function ContactPage() {
-    // Refs pour l'animation (maintenant typées correctement)
+    // Refs pour l'animation (maintenant correctement typées avec <HTMLElement>)
     const [heroRef, isHeroVisible] = useAnimateOnScroll<HTMLElement>();
     const [infoRef, isInfoVisible] = useAnimateOnScroll<HTMLElement>();
     const [formRef, isFormVisible] = useAnimateOnScroll<HTMLElement>();
@@ -254,7 +254,6 @@ export default function ContactPage() {
                             Remplissez les champs ci-dessous pour démarrer la discussion. Nous répondons généralement en 24h ouvrées.
                         </p>
                         
-                        {/* ⚠️ CORRECTION : Ajout de la fonction handleSubmit pour un formulaire fonctionnel */}
                         <form className="space-y-4" onSubmit={handleSubmit}> 
                             <input type="text" placeholder="Votre Nom Complet *" required className="w-full p-3 border border-gray-300 focus:border-green-500 focus:ring-green-500 transition-all duration-300" />
                             <input type="email" placeholder="Votre Email Professionnel *" required className="w-full p-3 border border-gray-300 focus:border-green-500 focus:ring-green-500 transition-all duration-300" />
@@ -275,12 +274,6 @@ export default function ContactPage() {
                         <h2 className="text-4xl font-bold mb-6">Où nous trouver</h2>
                         <div className="relative w-full h-96 shadow-lg">
                             
-
-
-
-[Image of Map of Kinshasa, Democratic Republic of the Congo]
-
-
                             <Image 
                                 src="/assets/kinshasa-map-placeholder.jpg" 
                                 alt="Localisation Kinshasa, RDC" 
