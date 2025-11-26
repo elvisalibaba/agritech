@@ -1,4 +1,4 @@
-'use client'; 
+'use client';
 
 import Link from 'next/link';
 import { Search, Tag, Clock, ArrowRight } from 'lucide-react';
@@ -10,10 +10,8 @@ const GREEN_PRIMARY = '#38a169'; // Accent Vert
 const TEXT_LIGHT = '#ffffff'; 
 const TEXT_ACCENT = '#cccccc';
 
-
 // --- COMPOSANT NAVBAR (Simplifié) ---
 const Navbar = () => {
-    // NOTE: Idéalement, ce composant devrait être importé.
     return (
         <header className="fixed top-0 left-0 right-0 z-50 border-b border-green-700 shadow-lg" style={{ backgroundColor: BG_DARK }}>
             <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex justify-between items-center text-sm">
@@ -27,7 +25,6 @@ const Navbar = () => {
                     <Link href="/blog" style={{ color: GREEN_PRIMARY, borderBottom: `2px solid ${GREEN_PRIMARY}` }} className="transition-colors pb-1">Blog</Link>
                     <Link href="/contact" style={{ backgroundColor: GREEN_PRIMARY, color: 'black' }} className="px-4 py-2 font-bold hover:bg-green-700 transition-colors duration-300 border-2 border-black">Contact</Link>
                 </div>
-                {/* Mobile Menu Placeholder */}
                 <div className="md:hidden text-white">Menu</div> 
             </div>
         </header>
@@ -45,10 +42,17 @@ const Footer = () => {
     );
 };
 
-
 // --- COMPOSANT CARTE ARTICLE DE BLOG ---
+type BlogPostCardProps = {
+    title: string;
+    excerpt: string;
+    date: string;
+    tag: string;
+    image: string;
+    delay?: number;
+};
 
-const BlogPostCard = ({ title, excerpt, date, tag, image, delay }) => {
+const BlogPostCard = ({ title, excerpt, date, tag, image, delay = 0 }: BlogPostCardProps) => {
     return (
         <div 
             className="group block transition-transform duration-500 hover:scale-[1.03] hover:shadow-2xl hover:shadow-green-500/20 animate-slide-up" 
@@ -56,7 +60,6 @@ const BlogPostCard = ({ title, excerpt, date, tag, image, delay }) => {
         >
             <Link href={`/blog/${title.toLowerCase().replace(/\s+/g, '-')}`}> 
                 
-                {/* Image d'accroche */}
                 <div className="overflow-hidden h-48">
                     <img 
                         src={image} 
@@ -67,7 +70,6 @@ const BlogPostCard = ({ title, excerpt, date, tag, image, delay }) => {
                 </div>
                 
                 <div className="p-6 space-y-3">
-                    {/* Tags et Méta */}
                     <div className="flex justify-between items-center text-xs uppercase font-medium text-gray-500">
                         <span className='flex items-center' style={{ color: GREEN_PRIMARY }}>
                             <Tag className='w-3 h-3 mr-1'/> {tag}
@@ -77,7 +79,6 @@ const BlogPostCard = ({ title, excerpt, date, tag, image, delay }) => {
                         </span>
                     </div>
 
-                    {/* Titre et Extrait */}
                     <h3 className="text-2xl font-bold transition-colors duration-300 group-hover:text-green-400" style={{ color: TEXT_LIGHT }}>
                         {title}
                     </h3>
@@ -85,7 +86,6 @@ const BlogPostCard = ({ title, excerpt, date, tag, image, delay }) => {
                         {excerpt}
                     </p>
                     
-                    {/* Lien de lecture */}
                     <div className='pt-2 flex items-center font-bold text-sm' style={{ color: GREEN_PRIMARY }}>
                         Lire l'article <ArrowRight className='w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1'/>
                     </div>
@@ -95,13 +95,9 @@ const BlogPostCard = ({ title, excerpt, date, tag, image, delay }) => {
     );
 };
 
-
 // --- PAGE PRINCIPALE DU BLOG ---
-
 export default function BlogPage() {
-    
-    // Données d'articles de blog (placeholders)
-    const blogPosts = [
+    const blogPosts: BlogPostCardProps[] = [
         {
             title: "ESRUD-TOUCH révolutionne l'analyse du sol en RDC",
             excerpt: "Découvrez comment notre robot autonome fournit des diagnostics ultra-rapides et précis, changeant la donne pour les petits exploitants...",
@@ -136,7 +132,6 @@ export default function BlogPage() {
         },
     ];
 
-    // Tags pour le filtrage
     const tags = ["Toutes les catégories", "Technologie & Robotique", "Intelligence Artificielle", "Durabilité & IoT", "Impact Social", "Actualités ESRUD"];
 
     return (
@@ -144,7 +139,6 @@ export default function BlogPage() {
             
             <Navbar />
 
-            {/* Section 1 : Hero - Titre principal & Recherche */}
             <section 
                 className="py-24 px-8 relative z-10 border-b-4" 
                 style={{ backgroundColor: '#000000', borderColor: GREEN_PRIMARY }}
@@ -157,7 +151,6 @@ export default function BlogPage() {
                         Actualités, analyses de marché et études de cas sur la transformation agricole en Afrique par la technologie.
                     </p>
                     
-                    {/* Champ de Recherche */}
                     <div className="max-w-lg mx-auto flex animate-slide-up-delay-2">
                         <input 
                             type="text" 
@@ -175,17 +168,15 @@ export default function BlogPage() {
                 </div>
             </section>
             
-            {/* Section 2 : Navigation et Articles */}
             <section className="py-20 px-8" style={{ backgroundColor: BG_DARK }}>
                 <div className="max-w-7xl mx-auto">
                     
-                    {/* Navigation/Filtres par Tag */}
                     <div className="mb-12 flex flex-wrap gap-3 animate-slide-up">
                         {tags.map((tag, index) => (
                             <span 
                                 key={index} 
                                 className={`px-4 py-2 text-sm font-semibold rounded-full border transition-colors duration-300 cursor-pointer ${
-                                    index === 0 // Mettez en surbrillance le premier (ou l'actif)
+                                    index === 0
                                     ? `bg-transparent border-green-500 text-green-500 hover:bg-green-900` 
                                     : `border-gray-700 text-gray-400 hover:text-white hover:border-white`
                                 }`}
@@ -195,22 +186,15 @@ export default function BlogPage() {
                         ))}
                     </div>
 
-                    {/* Grille des Articles */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         {blogPosts.map((post, index) => (
                             <BlogPostCard 
                                 key={index}
-                                title={post.title}
-                                excerpt={post.excerpt}
-                                date={post.date}
-                                tag={post.tag}
-                                image={post.image}
-                                delay={post.delay}
+                                {...post}
                             />
                         ))}
                     </div>
                     
-                    {/* Pagination (Placeholder) */}
                     <div className="text-center mt-16 animate-fade-in" style={{ animationDelay: '0.5s' }}>
                         <button className="px-6 py-3 font-semibold border-2" style={{ backgroundColor: BG_CARD, borderColor: GREEN_PRIMARY, color: GREEN_PRIMARY }}>
                             Charger plus d'articles
